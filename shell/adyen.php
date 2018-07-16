@@ -26,6 +26,8 @@
  */
 
 // php adyen.php -action loadBillingAgreements
+// php -f shell/adyen.php -- -action updateNotificationQueue
+
 
 require_once 'abstract.php';
 
@@ -189,6 +191,18 @@ class Adyen_Payments_Shell extends Mage_Shell_Abstract
    	public function loadBillingAgreementsActionHelp() {
    		return "";
    	}
+
+    /**
+     * This updates the notifications that are in the adyen event queue. This can be called a system cronjob 
+     */
+    public function updateNotificationQueueAction()
+    {
+        // call ProcessNotifications
+        $_debugData = Mage::getModel('adyen/processNotification')->updateNotProcessedNotifications();
+        if(isset($_debugData['UpdateNotProcessedEvents Step2']) && $_debugData['UpdateNotProcessedEvents Step2'] != 'The queue is empty') {
+          print_r($_debugData);
+        }
+    }
 }
 
 

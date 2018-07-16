@@ -19,9 +19,11 @@ But you can also request or suggest new features or code changes yourself!
 </ul>
 
 <h2>Setup Cron</h2>
-It is needed to enable the Magento cron. Make sure that this is running every minute.
-We are using a cronjob to process the notifications. The cronjob will be executed every minute. It only executes the notifications that have been received at least 5 minutes ago. We have built in this 5 minutes so we are sure Magento has created the order and all save after events are executed.
-A handy tool to get into your cronjobs is AOE scheduler. You can download this tool through <a href="http://www.magentocommerce.com/magento-connect/aoe-scheduler.html" target="_blank">Magento Connect</a> or <a target="_blank" href="https://github.com/AOEpeople/Aoe_Scheduler/releases">GitHub</a>
+Adyen notifications and payment updates are handled periodically every minute by the system cron process. The Adyen shell process can be configured by adding the following to your crontab. Edit accordingly, and replace `/var/www/html` with the web root of your Magento store. 
+
+<code>
+* * * * * /usr/bin/flock -n ~/.adyen_notification_mage.lock /usr/bin/php -f /var/www/html/shell/adyen.php -- -action updateNotificationQueue >> /var/www/html/var/log/adyen_notification_cron.log
+</code>
 
 <h2>Support</h2>
 You can create issues on our Magento Repository or if you have some specific problems for your account you can contact <a href="mailto:magento@adyen.com">magento@adyen.com</a>  as well.

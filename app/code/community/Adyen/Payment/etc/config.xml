@@ -655,6 +655,7 @@
             </payment>
         </adyen>
     </default>
+    <!--
     <crontab>
         <jobs>
             <adyen_payment_process_notification_queue>
@@ -667,4 +668,5 @@
             </adyen_payment_process_notification_queue>
         </jobs>
     </crontab>
+    -->
 </config>
