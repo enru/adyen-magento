@@ -257,7 +257,7 @@ class Adyen_Payment_ApplePayController extends Mage_Core_Controller_Front_Action
         // check if user is loggedin
         if (Mage::getSingleton('customer/session')->isLoggedIn()) {
             $customer = Mage::getSingleton('customer/session')->getCustomer();
-            $quote = $quote->assignCustomer($customer);
+            $quote = $quote->setCustomer($customer);
         }
 
         // override shippingContact and DeliveryContact
