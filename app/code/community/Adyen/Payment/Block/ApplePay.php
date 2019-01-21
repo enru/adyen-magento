@@ -110,62 +110,10 @@ class Adyen_Payment_Block_ApplePay extends Mage_Core_Block_Template
      */
     public function getShippingMethods()
     {
-        $product = $this->getProduct();
-
-        if(Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $customer = Mage::getSingleton('customer/session')->getCustomer();
-
-            // check if address is already chosen in the checkout if os use this otherwise use the default shipping
-            $quote = Mage::getSingleton('checkout/session')->getQuote();
-            $shippingAddressId = $quote->getShippingAddress()->customer_address_id;
-
-            if(!$shippingAddressId > 0) {
-                $shippingAddressId = $customer->getDefaultShipping();
-            }
-
-            if ($shippingAddressId) {
-                $shippingAddress = Mage::getModel('customer/address')->load($shippingAddressId);
-                $country = $shippingAddress->getCountryId();
-
-                // if it is a product retrieve shippping methods and calculate shippingCosts on this product
-                if ($product) {
-                    $shippingCosts = $this->calculateShippingCosts($product->getId(), $country, Mage::app()->getStore()->getId());
-                    return $shippingCosts;
-                }
-
-                // it is not a product so this is on the shopping cart retrieve shipping methods and calculate shipping costs on the cart
-                $zipcode = $shippingAddress->getPostcode();
-
-                $cart = Mage::getSingleton('checkout/cart');
-                $address = $cart->getQuote()->getShippingAddress();
-                $address->setCountryId($country)
-                    ->setPostcode($zipcode)
-                    ->setCollectShippingrates(true);
-                $cart->save();
-
-                // Find if our shipping has been included.
-                $rates = $address->collectShippingRates()
-                    ->getGroupedAllShippingRates();
-
-                $costs = array();
-                foreach ($rates as $carrier) {
-                    foreach ($carrier as $rate) {
-
-                        $costs[$rate->getCode()] = array(
-                            'title' => trim($rate->getMethodTitle()),
-                            'price' => Mage::helper('tax')->getShippingPrice($rate->getPrice(), true, $address)
-                        );
-
-                    }
-                }
-                return $costs;
-            }
-        } else {
-            if($product) {
-                $country = "";
-                $shippingCosts = $this->calculateShippingCosts($product->getId(), $country, Mage::app()->getStore()->getId());
-                return $shippingCosts;
-            }
+        if($product) {
+            $country = "";
+            $shippingCosts = $this->calculateShippingCosts($product->getId(), $country, Mage::app()->getStore()->getId());
+            return $shippingCosts;
         }
 
         return array();
